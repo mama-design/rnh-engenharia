@@ -4,6 +4,7 @@ Aplicação React estática para GitHub Pages. Login com e-mail/senha no Supabas
 
 ## Recursos preservados
 - Manhã/tarde/falta; um turno = meia diária para diaristas.
+- Seletor de data com chamada salva em verde e dias úteis passados pendentes em amarelo; fins de semana sem registro, hoje sem registro e datas futuras em branco.
 - Carteira assinada: presença e espelho sem cálculo financeiro.
 - Diária individual, valores históricos nas presenças, descontos e pagamentos por período livre.
 - Calendário mensal alinhado por dia da semana, espelho imprimível e controles para celular.

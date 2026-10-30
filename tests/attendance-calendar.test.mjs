@@ -1,0 +1,6 @@
+import {test}from'node:test';import assert from'node:assert/strict';import{attendanceDayStatus}from'../src/attendance-calendar.ts';
+const today='2026-10-30';
+test('past weekdays without a saved call are pending',()=>{assert.equal(attendanceDayStatus('2026-10-29',today),'pending');assert.equal(attendanceDayStatus('2026-10-26',today,{}),'pending')});
+test('today, future dates and unrecorded weekends are neutral',()=>{for(const date of ['2026-10-30','2026-11-02','2026-10-24','2026-10-25'])assert.equal(attendanceDayStatus(date,today),'neutral')});
+test('saved weekday, Saturday, Sunday and all-absent call are recorded',()=>{assert.equal(attendanceDayStatus('2026-10-29',today,{a:{morning:true}}),'recorded');assert.equal(attendanceDayStatus('2026-10-24',today,{a:{afternoon:true}}),'recorded');assert.equal(attendanceDayStatus('2026-10-25',today,{a:{absent:true}}),'recorded');assert.equal(attendanceDayStatus('2026-10-30',today,{a:{morning:true,afternoon:true}}),'recorded')});
+test('cleared selections and unsaved changes do not count as a saved call',()=>{assert.equal(attendanceDayStatus('2026-10-29',today,{a:{morning:false,afternoon:false,absent:false}}),'pending');assert.equal(attendanceDayStatus('2026-11-02',today,{a:{morning:true}}),'neutral')});
