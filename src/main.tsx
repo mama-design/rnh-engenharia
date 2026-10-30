@@ -1,1 +1,1 @@
-import React from 'react';import{createRoot}from'react-dom/client';import Auth from './Auth';import './style.css';createRoot(document.getElementById('root')!).render(<Auth/>);
+import React from 'react';import{createRoot}from'react-dom/client';import Auth from './Auth';import './style.css';if(location.protocol==='http:'&&location.hostname==='rnh.mamadesign.com.br'){location.replace('https://'+location.host+location.pathname+location.search+location.hash)}else{createRoot(document.getElementById('root')!).render(<Auth/>)}
