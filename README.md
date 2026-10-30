@@ -5,8 +5,10 @@ Aplicação React estática para GitHub Pages. Login com e-mail/senha no Supabas
 ## Recursos preservados
 - Manhã/tarde/falta; um turno = meia diária para diaristas.
 - Carteira assinada: presença e espelho sem cálculo financeiro.
-- Diária individual, valores históricos nas presenças, descontos e fechamento mensal.
+- Diária individual, valores históricos nas presenças, descontos e pagamentos por período livre.
 - Calendário mensal alinhado por dia da semana, espelho imprimível e controles para celular.
+- Pagamentos com datas inicial/final inclusivas, inclusive entre meses; histórico por período e bloqueio de intervalos sobrepostos.
+- Espelho do período com os meses correspondentes e datas fora do intervalo sinalizadas.
 - Proteção contra salvar sobre uma alteração feita em outro aparelho.
 
 ## Estado da implantação
