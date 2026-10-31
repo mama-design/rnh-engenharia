@@ -1,5 +1,5 @@
-import {inPeriod,monthsInPeriod,summarizePeriod} from './payroll.ts';
-type Employee={id:string,name:string,role:string,employment?:string};
+import {periodRates,inPeriod,monthsInPeriod,summarizePeriod} from './payroll.ts';
+type Employee={id:string,name:string,role:string,employment?:string,rate?:number};
 type Data={attendance:Parameters<typeof summarizePeriod>[3],discounts:({note:string}&Parameters<typeof summarizePeriod>[4][number])[]};
 const money=(n:number)=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const fmt=(s:string)=>s.split('-').reverse().join('/');
@@ -12,7 +12,9 @@ export async function exportReportJpeg(employee:Employee,start:string,end:string
  const discounts=employee.employment==='clt'?[]:data.discounts.filter(d=>d.employee===employee.id&&inPeriod(d.date,start,end));
  const discountLines=discounts.flatMap(d=>wrap(fmt(d.date)+' · '+d.note+' · − '+money(d.value)));
  const nameLines=wrap(employee.name,650);
- const height=460+nameLines.length*32+months.reduce((s,m)=>s+120+Math.ceil((new Date(m+'-01T12:00:00Z').getUTCDay()+new Date(Date.UTC(+m.slice(0,4),+m.slice(5),0)).getUTCDate())/7)*cellHeight,0)+discountLines.length*30+100;
+ const rates=periodRates(employee.id,start,end,data.attendance);
+ const rateLines=employee.employment==='clt'?[]:wrap(rates.length?(rates.length>1?'Valores da diária no período: ':'Valor da diária: ')+rates.map(money).join(' · '):employee.rate!==undefined?'Diária atual do cadastro: '+money(employee.rate)+' (sem turnos registrados no período)':'Sem turnos registrados no período.');
+ const height=460+rateLines.length*32+nameLines.length*32+months.reduce((s,m)=>s+120+Math.ceil((new Date(m+'-01T12:00:00Z').getUTCDay()+new Date(Date.UTC(+m.slice(0,4),+m.slice(5),0)).getUTCDate())/7)*cellHeight,0)+discountLines.length*30+100;
  // Keep within mobile canvas limits for longer periods.
  const scale=Math.min(1.5,14000/height,Math.sqrt(16000000/(width*height)));
  canvas.width=Math.round(width*scale);canvas.height=Math.round(height*scale);ctx.scale(scale,scale);ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
@@ -24,6 +26,7 @@ export async function exportReportJpeg(employee:Employee,start:string,end:string
  for(const line of nameLines){text(line,pad,y,30,'#262626',true);y+=34}
  for(const line of wrap(employee.role)){text(line,pad,y,22);y+=28}
  text(fmt(start)+' a '+fmt(end),pad,y+10,22);y+=60;
+ for(const line of rateLines){text(line,pad,y,22,'#262626',true);y+=32}if(rateLines.length)y+=12;
  const total=summarizePeriod(employee.id,start,end,data.attendance,data.discounts,employee.employment==='clt');
  if(employee.employment!=='clt'){ctx.fillStyle='#f4f4f4';ctx.fillRect(pad,y,width-pad*2,84);['Bruto: '+money(total.gross),'Descontos: '+money(total.discounts),'Saldo: '+money(total.net)].forEach((v,i)=>text(v,pad+15+i*310,y+50,21,'#262626',true));y+=108}
  for(const month of months){
